@@ -1,0 +1,89 @@
+:root {
+  /* valid8Me Colour Palette */
+  /* General */
+  --v8-colour-white: #FFFFFF;
+  --v8-colour-white-shadow: #F2F4F7;
+  --v8-colour-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Grey */
+  --v8-colour-grey-025: #D0D5DD;
+  --v8-colour-grey-050: #F9FAFB;
+  --v8-colour-grey-100: #F2F4F7;
+  --v8-colour-grey-200: #EAECF0;
+  --v8-colour-grey-300: #D0D5DD;
+  --v8-colour-grey-400: #7988A1;
+  --v8-colour-grey-500: #667085;
+  --v8-colour-grey-600: #46566B;
+  --v8-colour-grey-700: #233D51;
+  --v8-colour-grey-800: #1E2C40;
+  --v8-colour-grey-900: #101828;
+
+  /* Primary */
+  --v8-colour-primary-025: #ECF9F7;
+  --v8-colour-primary-050: #D8F2EF;
+  --v8-colour-primary-100: #B1E5E0;
+  --v8-colour-primary-200: #8AD8D0;
+  --v8-colour-primary-300: #63CBC1;
+  --v8-colour-primary-400: #3CBEB1;
+  --v8-colour-primary-500: #30988E;
+  --v8-colour-primary-600: #24726A;
+  --v8-colour-primary-700: #195650;
+  --v8-colour-primary-800: #144848;
+  --v8-colour-primary-900: #0F342D;
+
+  /* Success */
+  --v8-colour-success-025: #F6FEF9;
+  --v8-colour-success-050: #ECFDF3;
+  --v8-colour-success-100: #D1FADF;
+  --v8-colour-success-200: #A6F4C5;
+  --v8-colour-success-300: #6CE9A6;
+  --v8-colour-success-400: #32D583;
+  --v8-colour-success-500: #12B76A;
+  --v8-colour-success-600: #039855;
+  --v8-colour-success-700: #027A48;
+  --v8-colour-success-800: #05603A;
+
+  /* Warning */
+  --v8-colour-warning-025: #FFFCF5;
+  --v8-colour-warning-050: #FFFAEB;
+  --v8-colour-warning-100: #FEF0C7;
+  --v8-colour-warning-200: #FEDF89;
+  --v8-colour-warning-300: #FEC84B;
+  --v8-colour-warning-400: #FDB022;
+  --v8-colour-warning-500: #F79009;
+  --v8-colour-warning-600: #DC6803;
+  --v8-colour-warning-700: #B54708;
+  --v8-colour-warning-800: #93370D;
+  --v8-colour-warning-900: #7A2E0E;
+
+  /* Error */
+  --v8-colour-error-025: #FFFBFA;
+  --v8-colour-error-050: #FEF3F2;
+  --v8-colour-error-100: #FEE4E2;
+  --v8-colour-error-200: #FECDCA;
+  --v8-colour-error-300: #FDA29B;
+  --v8-colour-error-400: #F97066;
+  --v8-colour-error-500: #F04438;
+  --v8-colour-error-600: #D92D20;
+  --v8-colour-error-700: #B42318;
+  --v8-colour-error-800: #912018;
+  --v8-colour-error-900: #7A271A;
+}
+
+/**
+* Set base styles on all <V8* /> components in the component library.
+*
+* Note: Component base elements must have a className beginning with v8- for this to work
+*
+*/
+[class^='v8-'] {
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  font-weight: normal;
+}
+
+body {
+  margin: 0;
+  background-color: #F5F5F5;
+}

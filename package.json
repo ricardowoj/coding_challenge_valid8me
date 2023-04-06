@@ -1,0 +1,22 @@
+{
+  "name": "valid8me-task-manager",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@faker-js/faker": "7.6.0",
+    "change-case": "4.1.2",
+    "lodash.sample": "4.2.1",
+    "sass": "1.60.0",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "vite": "^4.2.0"
+  }
+}
