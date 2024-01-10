@@ -65,7 +65,7 @@ const TASK_CONFIG = {
 
 let IS_IMAGE_VALID = ref(null);
 const fetcherAvatarUrl = async () => {
-  await fetch(props.avatarUrl)
+  await fetch(props.avatarUrl, {mode: 'no-cors'})
 };
 fetcherAvatarUrl()
     .then(() => IS_IMAGE_VALID.value = true)
