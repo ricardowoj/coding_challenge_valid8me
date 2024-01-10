@@ -4,10 +4,15 @@ import V8Task from '@components/V8Task.vue';
 import V8TaskListContainer from '@components/V8TaskListContainer.vue';
 import { getTasks } from './services/api';
 import {BUTTON_TYPES, SIZES, TASK_STATUS} from './utils/constants';
+import { getLocalStorage, saveLocalStorage } from './services/useLocalStorage.js';
 
 const CLASSES = {
   BASE: 'app'
 };
+
+const KEY_LOCAL_STORAGE = {
+  value: 'tasks'
+}
 
 export default {
   name: 'App',
@@ -21,12 +26,15 @@ export default {
       BUTTON_TYPES,
       CLASSES,
       SIZES,
-      tasks: null
+      tasks: null,
+      keyLocalStorage: KEY_LOCAL_STORAGE.value
+
     }
   },
   async mounted() {
     const tasks = await getTasks();
-    this.tasks = Object.assign({}, tasks);
+    this.updateTasks(tasks);
+    this.prepareSaveLocalStorage();
   },
   methods: {
     onCompleteAll() {
@@ -41,6 +49,14 @@ export default {
     },
     completeTask(value) {
       value.status = TASK_STATUS.COMPLETE;
+      this.prepareSaveLocalStorage();
+    },
+    updateTasks(data) {
+      this.tasks = Object.assign({}, data);
+      this.prepareSaveLocalStorage();
+    },
+    prepareSaveLocalStorage() {
+      saveLocalStorage(this.keyLocalStorage, this.tasks);
     }
   }
 }
