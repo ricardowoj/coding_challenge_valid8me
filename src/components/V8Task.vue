@@ -1,6 +1,7 @@
 <script setup>
 import V8Button from '@components/V8Button.vue';
 import { BUTTON_TYPES, SIZES, TASK_STATUS } from '../utils/constants';
+import { ref } from 'vue';
 
 const emit = defineEmits(['completeTask']);
 
@@ -61,6 +62,14 @@ const TASK_CONFIG = {
         CLASS: 'complete'
     }
 };
+
+let IS_IMAGE_VALID = ref(null);
+const fetcherAvatarUrl = async () => {
+  await fetch(props.avatarUrl)
+};
+fetcherAvatarUrl()
+    .then(() => IS_IMAGE_VALID.value = true)
+    .catch(() => IS_IMAGE_VALID.value = false)
 </script>
 
 <template>
@@ -69,12 +78,17 @@ const TASK_CONFIG = {
         `is-status-${TASK_CONFIG[status].CLASS}`,
     ]">
         <section :class="[CLASSES.AVATAR_CONTAINER]">
-            <div :class="[CLASSES.FALLBACK_AVATAR]">
+            <div v-if="IS_IMAGE_VALID" :class="[CLASSES.FALLBACK_AVATAR]">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <image ref="idImageAvagarUr2l" :href="avatarUrl" width="24"  height="24"/>
                 </svg>
+            </div>
+            <div v-else :class="[CLASSES.FALLBACK_AVATAR]">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path ref="idImageAvagarUrl"
+                    d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
             </div>
         </section>
         <section :class="[CLASSES.TASK_CONTAINER]">
