@@ -30,9 +30,16 @@ export default {
   },
   methods: {
     onCompleteAll() {
-      // your code here
+      for(const value of Object.values(this.tasks)) {
+        if(value.status === TASK_STATUS.IN_PROGRESS) {
+          this.completeTask(value);
+        }
+      }
     },
     onCompleteTask(value) {
+      this.completeTask(value);
+    },
+    completeTask(value) {
       value.status = TASK_STATUS.COMPLETE;
     }
   }
