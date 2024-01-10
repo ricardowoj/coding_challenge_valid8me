@@ -2,7 +2,7 @@
 import V8Button from '@components/V8Button.vue';
 import V8Task from '@components/V8Task.vue';
 import V8TaskListContainer from '@components/V8TaskListContainer.vue';
-import { getTask } from './services/api';
+import { getTasks } from './services/api';
 import { BUTTON_TYPES, SIZES } from './utils/constants';
 
 const CLASSES = {
@@ -21,12 +21,12 @@ export default {
       BUTTON_TYPES,
       CLASSES,
       SIZES,
-      task: null
+      tasks: null
     }
   },
   async mounted() {
-    const task = await getTask();
-    this.task = task;
+    const tasks = await getTasks();
+    this.tasks = Object.assign({}, tasks);
   },
   methods: {
     onCompleteAll() {
@@ -56,11 +56,14 @@ export default {
       </section>
     </header>
     <V8TaskListContainer>
-      <V8Task
-        v-if="task"
-        v-bind="task"
-        @completeTask="onCompleteTask"
-      />
+      <div v-for="value in tasks">
+        <V8Task
+            v-if="value"
+            v-bind="value"
+            @completeTask="onCompleteTask"
+        />
+        <br>
+      </div>
     </V8TaskListContainer>
   </div>
 </template>
