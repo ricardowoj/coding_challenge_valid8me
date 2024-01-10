@@ -36,5 +36,8 @@ export function createTask(status) {
     title: capitalCase(`${faker.company.bsBuzz()} Task`),
     message: faker.lorem.sentence(),
     taskRef: faker.finance.creditCardNumber('###-###-###-##'),
+    dateCreated: faker.date.between('2023-12-01', '2024-01-11').toLocaleDateString(),
+    dateCompleted: status === TASK_STATUS.COMPLETE ?
+      faker.date.between(status || sample(taskStatuses), Date.now()).toLocaleDateString() : '',
   };
 }

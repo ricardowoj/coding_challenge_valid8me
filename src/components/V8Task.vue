@@ -41,6 +41,14 @@ const props = defineProps({
     disableAssignAction: {
         type: Boolean,
         default: false
+    },
+    dateCreated: {
+        type: String,
+        required: true
+    },
+    dateCompleted: {
+        type: String,
+        required: true
     }
 });
 
@@ -108,6 +116,8 @@ fetcherAvatarUrl()
                 <div v-if="taskRef" :class="[CLASSES.TASK_STATS]">
                     <template v-if="taskRef">
                         <strong>Task Ref: </strong> <span>{{ taskRef }}</span>
+                        <strong> {{status === TASK_STATUS.COMPLETE ? 'Completed At: ' : 'Created At: ' }} </strong>
+                        <span> {{status === TASK_STATUS.COMPLETE ? dateCompleted : dateCreated }} </span>
                     </template>
                 </div>
                 <footer v-if="status === TASK_STATUS.IN_PROGRESS">
