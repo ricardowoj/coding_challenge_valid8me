@@ -14,6 +14,11 @@ const KEY_LOCAL_STORAGE = {
   value: 'tasks'
 }
 
+const COMPLETE_TASK = {
+  hide: 'Hide Completed Tasks',
+  show: 'Show Completed Tasks'
+}
+
 export default {
   name: 'App',
   components: {
@@ -27,8 +32,8 @@ export default {
       CLASSES,
       SIZES,
       tasks: null,
-      keyLocalStorage: KEY_LOCAL_STORAGE.value
-
+      keyLocalStorage: KEY_LOCAL_STORAGE.value,
+      actualCompleteTask: COMPLETE_TASK.hide,
     }
   },
   async mounted() {
@@ -53,10 +58,20 @@ export default {
     },
     updateTasks(data) {
       this.tasks = Object.assign({}, data);
-      this.prepareSaveLocalStorage();
     },
     prepareSaveLocalStorage() {
       saveLocalStorage(this.keyLocalStorage, this.tasks);
+    },
+    onFilterCompleteTask() {
+      let data;
+      if(this.actualCompleteTask === COMPLETE_TASK.hide) {
+        data = Object.values(getLocalStorage(KEY_LOCAL_STORAGE.value)).filter(value => value.status === TASK_STATUS.IN_PROGRESS);
+        this.actualCompleteTask = COMPLETE_TASK.show;
+      } else {
+        data = Object.values(getLocalStorage(KEY_LOCAL_STORAGE.value));
+        this.actualCompleteTask = COMPLETE_TASK.hide;
+      }
+      this.updateTasks(data);
     }
   }
 }
@@ -69,6 +84,14 @@ export default {
       <h2>
         valid8Me-Task-Manager
       </h2>
+      <section>
+        <V8Button
+          :label="actualCompleteTask"
+          :type="BUTTON_TYPES.PRIMARY_INVERTED"
+          :size="SIZES.SMALL"
+          :onClick="onFilterCompleteTask"
+        />
+      </section>
       <section>
         <V8Button
           :label="'Complete All'"
