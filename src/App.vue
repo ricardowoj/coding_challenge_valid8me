@@ -3,7 +3,7 @@ import V8Button from '@components/V8Button.vue';
 import V8Task from '@components/V8Task.vue';
 import V8TaskListContainer from '@components/V8TaskListContainer.vue';
 import { getTasks } from './services/api';
-import { BUTTON_TYPES, SIZES } from './utils/constants';
+import {BUTTON_TYPES, SIZES, TASK_STATUS} from './utils/constants';
 
 const CLASSES = {
   BASE: 'app'
@@ -32,8 +32,8 @@ export default {
     onCompleteAll() {
       // your code here
     },
-    onCompleteTask() {
-      // your code here
+    onCompleteTask(value) {
+      value.status = TASK_STATUS.COMPLETE;
     }
   }
 }
@@ -60,7 +60,7 @@ export default {
         <V8Task
             v-if="value"
             v-bind="value"
-            @completeTask="onCompleteTask"
+            @completeTask="onCompleteTask(value)"
         />
         <br>
       </div>
