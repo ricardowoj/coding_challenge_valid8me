@@ -5,6 +5,7 @@ import V8TaskListContainer from '@components/V8TaskListContainer.vue';
 import { getTasks } from './services/api';
 import {BUTTON_TYPES, SIZES, TASK_STATUS} from './utils/constants';
 import { getLocalStorage, saveLocalStorage } from './services/useLocalStorage.js';
+import { getNewDate } from './utils/dateUtils.js';
 
 const CLASSES = {
   BASE: 'app'
@@ -39,39 +40,63 @@ export default {
   async mounted() {
     const tasks = await getTasks();
     this.updateTasks(tasks);
-    this.prepareSaveLocalStorage();
+    this.saveTasksLocalStorage(this.tasks);
   },
   methods: {
     onCompleteAll() {
-      for(const value of Object.values(this.tasks)) {
-        if(value.status === TASK_STATUS.IN_PROGRESS) {
-          this.completeTask(value);
+      let data = this.getTasksLocalStorage();
+      for(const value of data) {
+        if(value['status'] === TASK_STATUS.IN_PROGRESS) {
+          value.status = TASK_STATUS.COMPLETE;
+          value.dateCompleted = getNewDate();
         }
       }
+      this.saveTasksLocalStorage(data);
+      this.reloadCompletedTasks();
     },
     onCompleteTask(value) {
       this.completeTask(value);
+      this.reloadCompletedTasks();
     },
-    completeTask(value) {
-      value.status = TASK_STATUS.COMPLETE;
-      this.prepareSaveLocalStorage();
+    completeTask(task) {
+      let data = this.getTasksLocalStorage();
+      for(const value of data) {
+        if(task['taskRef'] === value['taskRef']) {
+          value.status = TASK_STATUS.COMPLETE;
+          value.dateCompleted = getNewDate();
+        }
+      }
+      this.saveTasksLocalStorage(data);
+      this.reloadCompletedTasks();
     },
     updateTasks(data) {
-      this.tasks = Object.assign({}, data);
-    },
-    prepareSaveLocalStorage() {
-      saveLocalStorage(this.keyLocalStorage, this.tasks);
+      this.tasks = data;
     },
     onFilterCompleteTask() {
       let data;
+      this.setTasksLocalStorage();
       if(this.actualCompleteTask === COMPLETE_TASK.hide) {
-        data = Object.values(getLocalStorage(KEY_LOCAL_STORAGE.value)).filter(value => value.status === TASK_STATUS.IN_PROGRESS);
+        data = this.getTasksLocalStorage().filter(value => value.status === TASK_STATUS.IN_PROGRESS);
         this.actualCompleteTask = COMPLETE_TASK.show;
+        this.updateTasks(data);
       } else {
-        data = Object.values(getLocalStorage(KEY_LOCAL_STORAGE.value));
         this.actualCompleteTask = COMPLETE_TASK.hide;
+        this.setTasksLocalStorage();
       }
-      this.updateTasks(data);
+    },
+    reloadCompletedTasks() {
+      this.setTasksLocalStorage();
+      this.onFilterCompleteTask();
+      this.onFilterCompleteTask();
+    },
+    setTasksLocalStorage() {
+      this.updateTasks(this.getTasksLocalStorage());
+    },
+    getTasksLocalStorage() {
+      return getLocalStorage(KEY_LOCAL_STORAGE.value);
+    },
+    saveTasksLocalStorage(data) {
+      saveLocalStorage(this.keyLocalStorage, data);
     }
   }
 }
