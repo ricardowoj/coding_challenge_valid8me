@@ -49,6 +49,10 @@ const props = defineProps({
     dateCompleted: {
         type: String,
         required: true
+    },
+    id: {
+      type: Number,
+      required: true,
     }
 });
 
@@ -72,11 +76,19 @@ const TASK_CONFIG = {
 };
 
 let IS_IMAGE_VALID = ref(false);
-const fetcherAvatarUrl = async () => {
-  await fetch(props.avatarUrl)
-};
-fetcherAvatarUrl()
-    .then(() => IS_IMAGE_VALID.value = true)
+const loadImage = (url) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      resolve(img);
+    };
+  });
+}
+loadImage(props.avatarUrl)
+    .then(() => {
+      IS_IMAGE_VALID.value = true
+    })
 </script>
 
 <template>
