@@ -2,6 +2,7 @@
 import V8Button from '@components/V8Button.vue';
 import V8Task from '@components/V8Task.vue';
 import V8TaskListContainer from '@components/V8TaskListContainer.vue';
+import V8TaskModal from "./components/V8TaskModal.vue";
 import { getTasks } from './services/api';
 import {BUTTON_TYPES, SIZES, TASK_STATUS} from './utils/constants';
 import { getLocalStorage, saveLocalStorage } from './services/useLocalStorage.js';
@@ -25,7 +26,8 @@ export default {
   components: {
     V8Button,
     V8Task,
-    V8TaskListContainer
+    V8TaskListContainer,
+    V8TaskModal
   },
   data() {
     return {
@@ -35,6 +37,7 @@ export default {
       tasks: null,
       keyLocalStorage: KEY_LOCAL_STORAGE.value,
       actualCompleteTask: COMPLETE_TASK.hide,
+      isTaskModalVisible: false
     }
   },
   async mounted() {
@@ -97,6 +100,12 @@ export default {
     },
     saveTasksLocalStorage(data) {
       saveLocalStorage(this.keyLocalStorage, data);
+    },
+    onCreateTask() {
+      this.isTaskModalVisible = true;
+    },
+    closeTaskModal() {
+      this.isTaskModalVisible = false;
     }
   }
 }
@@ -117,15 +126,25 @@ export default {
           :onClick="onFilterCompleteTask"
         />
       </section>
-      <section>
-        <V8Button
-          :label="'Complete All'"
-          :type="BUTTON_TYPES.PRIMARY_INVERTED"
-          :size="SIZES.SMALL"
-          :onClick="onCompleteAll"
-        />
-      </section>
     </header>
+    <div class="box-actions">
+      <div class="box-itens">
+        <V8Button
+            :label="'Complete All'"
+            :type="BUTTON_TYPES.PRIMARY_INVERTED"
+            :size="SIZES.SMALL"
+            :onClick="onCompleteAll"
+        />
+      </div>
+      <div class="box-itens">
+        <V8Button
+            :label="'Create task'"
+            :type="BUTTON_TYPES.PRIMARY_INVERTED"
+            :size="SIZES.SMALL"
+            :onClick="onCreateTask"
+        />
+      </div>
+    </div>
     <V8TaskListContainer>
       <div v-for="value in tasks">
         <V8Task
@@ -136,6 +155,7 @@ export default {
         <br>
       </div>
     </V8TaskListContainer>
+    <V8TaskModal v-show="isTaskModalVisible" @close="closeTaskModal"/>
   </div>
 </template>
 
@@ -165,6 +185,17 @@ export default {
     > section {
       margin-left: auto;
     }
+  }
+
+  .box-actions {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    width: 94%;
+    margin: 10px 10px 10px 10px;
+  }
+  .box-itens {
+    margin-left: 10px;
   }
 }
 
