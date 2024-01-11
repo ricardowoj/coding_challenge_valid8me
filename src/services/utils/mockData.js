@@ -30,6 +30,7 @@ const taskStatuses = Object.values(TASK_STATUS);
 
 export function createTask(status) {
   return {
+    id: Math.floor(Math.random() * 10000),
     status: status || sample(taskStatuses),
     avatarUrl: sample(AVATAR_URLS),
     source: faker.name.fullName(),

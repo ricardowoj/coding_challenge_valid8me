@@ -61,7 +61,7 @@ export default {
     completeTask(task) {
       let data = this.getTasksLocalStorage();
       for(const value of data) {
-        if(task['taskRef'] === value['taskRef']) {
+        if(task['id'] === value['id']) {
           value.status = TASK_STATUS.COMPLETE;
           value.dateCompleted = getNewDate();
         }
