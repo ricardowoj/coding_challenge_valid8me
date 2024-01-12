@@ -4,17 +4,13 @@ import V8Task from '@components/V8Task.vue';
 import V8TaskListContainer from '@components/V8TaskListContainer.vue';
 import V8TaskModal from "./components/V8TaskModal.vue";
 import { getTasks } from './services/api';
-import {BUTTON_TYPES, SIZES, TASK_STATUS} from './utils/constants';
+import {BUTTON_TYPES, KEY_LOCAL_STORAGE, SIZES, TASK_STATUS} from './utils/constants';
 import { getLocalStorage, saveLocalStorage } from './services/useLocalStorage.js';
 import { getNewDate } from './utils/dateUtils.js';
 
 const CLASSES = {
   BASE: 'app'
 };
-
-const KEY_LOCAL_STORAGE = {
-  value: 'tasks'
-}
 
 const COMPLETE_TASK = {
   hide: 'Hide Completed Tasks',
@@ -155,7 +151,11 @@ export default {
         <br>
       </div>
     </V8TaskListContainer>
-    <V8TaskModal v-show="isTaskModalVisible" @close="closeTaskModal"/>
+    <V8TaskModal
+        v-if="isTaskModalVisible"
+        @close="closeTaskModal"
+        @reload="reloadCompletedTasks"
+    />
   </div>
 </template>
 
