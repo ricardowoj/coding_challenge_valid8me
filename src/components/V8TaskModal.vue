@@ -38,7 +38,7 @@ export default {
       SIZES,
       form: Object.assign({}, FORM_TASK),
       v$: useVuelidate(),
-      editTask: false
+      isEditTask: false
     }
   },
   validations() {
@@ -55,7 +55,7 @@ export default {
   mounted() {
     this.clear();
     if(toRaw(this.task).id !== undefined) {
-      this.editTask = true;
+      this.isEditTask = true;
       this.initializeEdition(this.task)
     }
   },
@@ -68,7 +68,7 @@ export default {
       if (this.v$.$invalid) {
         return;
       }
-      if(this.editTask) {
+      if(this.isEditTask) {
         this.prepareWithEditedTask();
       } else {
         this.addNewTask(toRaw(this.form))
@@ -83,7 +83,7 @@ export default {
       this.message = '';
       this.avatarUrl = '';
       this.data = [];
-      this.editTask = false;
+      this.isEditTask = false;
     },
     addNewTask(task) {
       const newData = [task];
@@ -126,7 +126,7 @@ export default {
   <div class="modal-overlay">
     <div class="modal">
       <header class="modal-header">
-        <slot name="header">Create Task</slot>
+        <slot name="header">{{isEditTask ? 'Edit Task' : 'Create Task'}}</slot>
         <button type="button" class="btn-close" @click="close">x</button>
       </header>
       <div class="modal-body">
