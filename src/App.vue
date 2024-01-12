@@ -19,6 +19,11 @@ const COMPLETE_TASK = {
 
 export default {
   name: 'App',
+  computed: {
+    TASK_STATUS() {
+      return TASK_STATUS
+    }
+  },
   components: {
     V8Button,
     V8Task,
@@ -58,11 +63,11 @@ export default {
       this.completeTask(value);
       this.reloadCompletedTasks();
     },
-    completeTask(task) {
+    changeStatusTask(task, status) {
       let data = this.getTasksLocalStorage();
       for(const value of data) {
         if(task['id'] === value['id']) {
-          value.status = TASK_STATUS.COMPLETE;
+          value.status = status;
           value.dateCompleted = getNewDate();
         }
       }
@@ -105,14 +110,13 @@ export default {
     closeTaskModal() {
       this.isTaskModalVisible = false;
     },
-    editTask(data) {
+    onEditTask(data) {
       if(data.status === TASK_STATUS.COMPLETE) {
-        alert("Task already completed");
         return;
       }
       this.task = data;
       this.onCreateTask();
-    }
+    },
   }
 }
 
@@ -122,7 +126,7 @@ export default {
   <div :class="CLASSES.BASE">
     <header>
       <h2>
-        valid8Me-Task-Manager
+        Valid8Me Task Manager
       </h2>
       <section>
         <V8Button
@@ -156,8 +160,9 @@ export default {
         <V8Task
             v-if="value"
             v-bind="value"
-            @completeTask="onCompleteTask(value)"
-            @click="editTask(value)"
+            @completeTask="changeStatusTask(value, TASK_STATUS.COMPLETE)"
+            @editTask="onEditTask(value)"
+            @returnTask="changeStatusTask(value, TASK_STATUS.IN_PROGRESS)"
         />
         <br>
       </div>

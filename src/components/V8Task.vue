@@ -3,7 +3,11 @@ import V8Button from '@components/V8Button.vue';
 import { BUTTON_TYPES, SIZES, TASK_STATUS } from '../utils/constants';
 import { ref } from 'vue';
 
-const emit = defineEmits(['completeTask']);
+const emit = defineEmits(['completeTask', 'editTask', 'returnTask']);
+
+/*
+const emitEditTask = defineEmits(['editTask']);
+const emitReturnTask = defineEmits(['returnTask']);*/
 
 const props = defineProps({
     avatarUrl: {
@@ -132,13 +136,32 @@ loadImage(props.avatarUrl)
                         <span> {{status === TASK_STATUS.COMPLETE ? dateCompleted : dateCreated }} </span>
                     </template>
                 </div>
+                <br>
                 <footer v-if="status === TASK_STATUS.IN_PROGRESS">
+                  <div class="itens-footer">
+                    <V8Button
+                        :size="SIZES.SMALL"
+                        :label="'Edit Task'"
+                        :type="BUTTON_TYPES.SECONDARY"
+                        :onClick="() => emit('editTask')"
+                    />
+                  </div>
+                  <div class="itens-footer">
                     <V8Button
                         :size="SIZES.SMALL"
                         :label="'Complete Task'"
                         :type="BUTTON_TYPES.SECONDARY"
                         :onClick="() => emit('completeTask')"
                     />
+                  </div>
+                </footer>
+                <footer v-if="status === TASK_STATUS.COMPLETE">
+                  <V8Button
+                      :size="SIZES.SMALL"
+                      :label="'Return Task'"
+                      :type="BUTTON_TYPES.SECONDARY"
+                      :onClick="() => emit('returnTask')"
+                  />
                 </footer>
             </main>
         </section>
@@ -149,7 +172,6 @@ loadImage(props.avatarUrl)
 article.v8-task {
     @include font-base;
     @include font-smoothing;
-    cursor: pointer;
     display: flex;
     gap: 12px;
     width: 630px;
@@ -274,6 +296,10 @@ article.v8-task {
                 @include task-hover-shadow(var(--v8-colour-success-050));
             }
         }
+    }
+
+    .itens-footer {
+      margin: 3px;
     }
 }
 </style>
