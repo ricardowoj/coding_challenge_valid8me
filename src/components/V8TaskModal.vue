@@ -10,7 +10,7 @@ import {toRaw} from 'vue';
 import {getGenerateId} from "../utils/mathUtils.js";
 
 const FORM_TASK = {
-  id: getGenerateId(),
+  id: '',
   status: TASK_STATUS.IN_PROGRESS,
   avatarUrl: '',
   source: '',
@@ -61,6 +61,7 @@ export default {
   },
   methods: {
     close() {
+      this.clear();
       this.$emit("close");
     },
     onSave() {
@@ -71,7 +72,8 @@ export default {
       if(this.isEditTask) {
         this.prepareWithEditedTask();
       } else {
-        this.addNewTask(toRaw(this.form))
+        toRaw(this.form).id = getGenerateId();
+        this.addNewTask(toRaw(this.form));
       }
       this.$emit("reload");
       this.close();

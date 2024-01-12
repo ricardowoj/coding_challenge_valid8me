@@ -104,19 +104,24 @@ export default {
       saveLocalStorage(this.keyLocalStorage, data);
     },
     onCreateTask() {
-      this.$emit('task')
-      this.isTaskModalVisible = true;
+      this.task = {};
+      this.$emit('task');
+      this.setTaskModalVisible(true);
     },
     closeTaskModal() {
-      this.isTaskModalVisible = false;
+      this.setTaskModalVisible(false);
     },
     onEditTask(data) {
       if(data.status === TASK_STATUS.COMPLETE) {
         return;
       }
       this.task = data;
-      this.onCreateTask();
+      this.$emit('task');
+      this.setTaskModalVisible(true);
     },
+    setTaskModalVisible(value) {
+      this.isTaskModalVisible = value;
+    }
   }
 }
 
