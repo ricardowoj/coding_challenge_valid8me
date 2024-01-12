@@ -26,3 +26,7 @@ export const TASK_STATUS = {
     IN_PROGRESS: 'IN_PROGRESS',
     COMPLETE: 'COMPLETE',
 };
+
+export const KEY_LOCAL_STORAGE = {
+  value: 'tasks'
+}
