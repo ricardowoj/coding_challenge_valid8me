@@ -6,7 +6,8 @@ import { faker } from '@faker-js/faker';
 import sample from 'lodash.sample';
 import { capitalCase } from 'change-case';
 
-import { TASK_STATUS } from '@utils/constants';
+import { TASK_STATUS } from '../../utils/constants.js';
+import {getGenerateId} from "../../utils/mathUtils.js";
 
 export const AVATAR_URLS = [
     'https://gravatar.com/avatar/aa902b27c91cbe8b58bd72560ed7d51e?s=400&d=robohash&r=pg',
@@ -30,7 +31,7 @@ const taskStatuses = Object.values(TASK_STATUS);
 
 export function createTask(status) {
   return {
-    id: Math.floor(Math.random() * 10000),
+    id: getGenerateId(),
     status: status || sample(taskStatuses),
     avatarUrl: sample(AVATAR_URLS),
     source: faker.name.fullName(),

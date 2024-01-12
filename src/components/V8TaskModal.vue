@@ -7,9 +7,10 @@ import {getNewDate} from "../utils/dateUtils.js";
 import useVuelidate from "@vuelidate/core";
 import {required} from "@vuelidate/validators";
 import {toRaw} from 'vue';
+import {getGenerateId} from "../utils/mathUtils.js";
 
 const FORM_TASK = {
-  id: Math.floor(Math.random() * 10000),
+  id: getGenerateId(),
   status: TASK_STATUS.IN_PROGRESS,
   avatarUrl: '',
   source: '',
