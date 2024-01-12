@@ -5,11 +5,11 @@ import V8Input from "./V8Input.vue";
 import { getLocalStorage, saveLocalStorage } from '../services/useLocalStorage.js';
 import {getNewDate} from "../utils/dateUtils.js";
 import useVuelidate from "@vuelidate/core";
-import {required, numeric} from "@vuelidate/validators";
+import {required} from "@vuelidate/validators";
 import {toRaw} from 'vue';
 
 const FORM_TASK = {
-  id: null,
+  id: Math.floor(Math.random() * 10000),
   status: TASK_STATUS.IN_PROGRESS,
   avatarUrl: '',
   source: '',
@@ -26,12 +26,18 @@ export default {
     V8Button,
     V8Input
   },
+  props: {
+    task: {
+      type: Object
+    }
+  },
   data() {
     return {
       BUTTON_TYPES,
       SIZES,
       form: Object.assign({}, FORM_TASK),
       v$: useVuelidate(),
+      editTask: false
     }
   },
   validations() {
@@ -39,7 +45,7 @@ export default {
       form: {
         source: { required, $autoDirty: true},
         title: { required, $autoDirty: true},
-        taskRef: { required, numeric, $autoDirty: true},
+        taskRef: { required, $autoDirty: true},
         message: { required, $autoDirty: true},
         avatarUrl: { required, $autoDirty: true},
       }
@@ -47,6 +53,10 @@ export default {
   },
   mounted() {
     this.clear();
+    if(toRaw(this.task).id !== undefined) {
+      this.editTask = true;
+      this.initializeEdition(this.task)
+    }
   },
   methods: {
     close() {
@@ -57,7 +67,11 @@ export default {
       if (this.v$.$invalid) {
         return;
       }
-      this.addData(toRaw(this.form))
+      if(this.editTask) {
+        this.prepareWithEditedTask();
+      } else {
+        this.addNewTask(toRaw(this.form))
+      }
       this.$emit("reload");
       this.close();
     },
@@ -68,8 +82,9 @@ export default {
       this.message = '';
       this.avatarUrl = '';
       this.data = [];
+      this.editTask = false;
     },
-    addData(task) {
+    addNewTask(task) {
       const newData = [task];
       for(const value of this.getTasksLocalStorage()) {
         newData.push(value);
@@ -79,6 +94,29 @@ export default {
     getTasksLocalStorage() {
       return getLocalStorage(KEY_LOCAL_STORAGE.value);
     },
+    initializeEdition(task) {
+      this.form.id = toRaw(task).id;
+      this.form.source = toRaw(task).source;
+      this.form.title = toRaw(task).title;
+      this.form.taskRef = toRaw(task).taskRef;
+      this.form.message = toRaw(task).message;
+      this.form.avatarUrl = toRaw(task).avatarUrl;
+    },
+    prepareWithEditedTask() {
+      const newData = [];
+      let data = this.getTasksLocalStorage();
+      for(const value of data) {
+        if(value.id === toRaw(this.form).id) {
+          value.source = toRaw(this.form).source;
+          value.title = toRaw(this.form).title;
+          value.taskRef = toRaw(this.form).taskRef;
+          value.message = toRaw(this.form).message;
+          value.avatarUrl = toRaw(this.form).avatarUrl;
+        }
+        newData.push(value);
+      }
+      saveLocalStorage(KEY_LOCAL_STORAGE.value, newData);
+    }
   }
 }
 </script>
@@ -232,10 +270,6 @@ export default {
   .modal-footer {
     justify-content: flex-end;
     border-top: 1px solid var(--v8-colour-grey-300);
-  }
-
-  .modal-footer-button{
-    margin: 2px;
   }
 
   .modal-body {

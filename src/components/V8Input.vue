@@ -33,7 +33,6 @@ export default {
     </label>
     <br>
     <input
-      type="text"
       :type="type"
       :value="modelValue"
       @input="updateInput"

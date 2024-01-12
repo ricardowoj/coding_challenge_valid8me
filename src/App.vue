@@ -33,7 +33,8 @@ export default {
       tasks: null,
       keyLocalStorage: KEY_LOCAL_STORAGE.value,
       actualCompleteTask: COMPLETE_TASK.hide,
-      isTaskModalVisible: false
+      isTaskModalVisible: false,
+      task: {}
     }
   },
   async mounted() {
@@ -98,10 +99,19 @@ export default {
       saveLocalStorage(this.keyLocalStorage, data);
     },
     onCreateTask() {
+      this.$emit('task')
       this.isTaskModalVisible = true;
     },
     closeTaskModal() {
       this.isTaskModalVisible = false;
+    },
+    editTask(data) {
+      if(data.status === TASK_STATUS.COMPLETE) {
+        alert("Task already completed");
+        return;
+      }
+      this.task = data;
+      this.onCreateTask();
     }
   }
 }
@@ -147,6 +157,7 @@ export default {
             v-if="value"
             v-bind="value"
             @completeTask="onCompleteTask(value)"
+            @click="editTask(value)"
         />
         <br>
       </div>
@@ -155,6 +166,7 @@ export default {
         v-if="isTaskModalVisible"
         @close="closeTaskModal"
         @reload="reloadCompletedTasks"
+        :task="task"
     />
   </div>
 </template>
