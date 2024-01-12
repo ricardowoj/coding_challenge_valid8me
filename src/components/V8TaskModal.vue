@@ -2,9 +2,11 @@
 import V8Button from '../components/V8Button.vue';
 import {BUTTON_TYPES, KEY_LOCAL_STORAGE, SIZES, TASK_STATUS} from '../utils/constants';
 import V8Input from "./V8Input.vue";
-import { toRaw } from 'vue';
 import { getLocalStorage, saveLocalStorage } from '../services/useLocalStorage.js';
 import {getNewDate} from "../utils/dateUtils.js";
+import useVuelidate from "@vuelidate/core";
+import {required, numeric} from "@vuelidate/validators";
+import {toRaw} from 'vue';
 
 const FORM_TASK = {
   id: null,
@@ -28,27 +30,55 @@ export default {
     return {
       BUTTON_TYPES,
       SIZES,
-      form: FORM_TASK,
-      data: []
+      form: Object.assign({}, FORM_TASK),
+      v$: useVuelidate(),
     }
   },
-  created() {
-    this.getData();
+  validations() {
+    return {
+      form: {
+        source: { required, $autoDirty: true},
+        title: { required, $autoDirty: true},
+        taskRef: { required, numeric, $autoDirty: true},
+        message: { required, $autoDirty: true},
+        avatarUrl: { required, $autoDirty: true},
+      }
+    }
+  },
+  mounted() {
+    this.clear();
   },
   methods: {
     close() {
       this.$emit("close");
     },
     onSave() {
-      let newTask = this.form;
-      this.data.push(newTask);
+      this.v$.$touch()
+      if (this.v$.$invalid) {
+        return;
+      }
+      this.addData(toRaw(this.form))
+      this.$emit("reload");
       this.close();
     },
-    getData() {
-      for (const value of getLocalStorage(KEY_LOCAL_STORAGE.value)) {
-        this.data.push(value);
+    clear() {
+      this.source = '';
+      this.title = '';
+      this.taskRef = '';
+      this.message = '';
+      this.avatarUrl = '';
+      this.data = [];
+    },
+    addData(task) {
+      const newData = [task];
+      for(const value of this.getTasksLocalStorage()) {
+        newData.push(value);
       }
-    }
+      saveLocalStorage(KEY_LOCAL_STORAGE.value, newData);
+    },
+    getTasksLocalStorage() {
+      return getLocalStorage(KEY_LOCAL_STORAGE.value);
+    },
   }
 }
 </script>
@@ -61,27 +91,95 @@ export default {
         <button type="button" class="btn-close" @click="close">x</button>
       </header>
       <div class="modal-body">
-        <div class="row">
-          <div class="col">
-            <v8-input id="source" class="modal-button" type="text" label="Source:" v-model="form.source" required/>
+        <div class="col">
+          <div class="row">
+            <v8-input
+                id="source"
+                :class="v$.form.source.$error === true ? 'modal-button text-fields-error':
+                  'modal-button text-fields'"
+                type="text"
+                label="Source:"
+                v-model="form.source"
+            />
+            <p class="text-red"
+                v-for="error of v$.form.source.$errors"
+                :key="error.$uid"
+            >
+              {{ error.$message }}
+            </p>
           </div>
-          <div class="col">
-            <v8-input id="title" class="modal-button" type="text" label="Title:" v-model="form.title" />
+          <div class="row">
+            <v8-input
+                id="title"
+                :class="v$.form.title.$error === true ? 'modal-button text-fields-error':
+                  'modal-button text-fields'"
+                type="text"
+                label="Title:"
+                v-model="form.title"
+            />
+            <p class="text-red"
+               v-for="error of v$.form.title.$errors"
+               :key="error.$uid"
+            >
+              {{ error.$message }}
+            </p>
           </div>
-          <div class="col">
-            <v8-input id="taskRef" class="modal-button" type="text" label="Task Reference:" v-model="form.taskRef" />
+          <div class="row">
+            <v8-input
+                id="taskRef"
+                :class="v$.form.taskRef.$error === true ? 'modal-button text-fields-error':
+                  'modal-button text-fields'"
+                type="text"
+                label="Task Reference:"
+                v-model="form.taskRef"
+            />
+            <p class="text-red"
+               v-for="error of v$.form.taskRef.$errors"
+               :key="error.$uid"
+            >
+              {{ error.$message }}
+            </p>
           </div>
-          <div class="col">
-            <v8-input id="message" class="modal-button" type="password" label="Message:" v-model="form.message" />
+          <div class="row">
+            <v8-input
+                id="message"
+                :class="v$.form.message.$error === true ? 'modal-button text-fields-error':
+                  'modal-button text-fields'"
+                type="text"
+                label="Message:"
+                v-model="form.message"
+            />
+            <p class="text-red"
+               v-for="error of v$.form.message.$errors"
+               :key="error.$uid"
+            >
+              {{ error.$message }}
+            </p>
+          </div>
+          <div class="row">
+            <v8-input
+                id="avatarUrl"
+                :class="v$.form.avatarUrl.$error === true ? 'modal-button text-fields-error':
+                  'modal-button text-fields'"
+                type="text"
+                label="Avatar URL:"
+                v-model="form.avatarUrl"
+            />
+            <p class="text-red"
+               v-for="error of v$.form.avatarUrl.$errors"
+               :key="error.$uid"
+            >
+              {{ error.$message }}
+            </p>
           </div>
         </div>
       </div>
       <footer class="modal-footer">
         <V8Button
-          :label="'Save'"
-          :type="BUTTON_TYPES.PRIMARY_INVERTED"
-          :size="SIZES.SMALL"
-          :onClick="onSave"
+            :label="'Save'"
+            :type="BUTTON_TYPES.PRIMARY_INVERTED"
+            :size="SIZES.SMALL"
+            :onClick="onSave"
         />
       </footer>
     </div>
@@ -102,7 +200,7 @@ export default {
   }
 
   .modal {
-    height: 400px;
+    height: 590px;
     width: 500px;
     border-radius: 8px;
     overflow-x: auto;
@@ -136,6 +234,10 @@ export default {
     border-top: 1px solid var(--v8-colour-grey-300);
   }
 
+  .modal-footer-button{
+    margin: 2px;
+  }
+
   .modal-body {
     position: relative;
     padding: 20px 10px;
@@ -166,13 +268,21 @@ export default {
    }
 
   .row {
+    float: left;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .col {
     width: 100%;
     display: inline-flex;
     flex-wrap: wrap;
   }
 
-  .col {
-    float: left;
-    width: 100%;
+  .text-red {
+    font-size: 12px;
+    margin: 0 0 0 6px;
+    color: var(--v8-colour-error-500);
   }
+
 </style>
