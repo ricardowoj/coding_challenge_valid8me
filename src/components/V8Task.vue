@@ -93,6 +93,9 @@ loadImage(props.avatarUrl)
     .then(() => {
       IS_IMAGE_VALID.value = true
     })
+
+const isTaskCompleted = (status) =>
+  status === TASK_STATUS.COMPLETE;
 </script>
 
 <template>
@@ -132,8 +135,10 @@ loadImage(props.avatarUrl)
                 <div v-if="taskRef" :class="[CLASSES.TASK_STATS]">
                     <template v-if="taskRef">
                         <strong>Task Ref: </strong> <span>{{ taskRef }}</span>
-                        <strong> {{status === TASK_STATUS.COMPLETE ? 'Completed At: ' : 'Created At: ' }} </strong>
-                        <span> {{status === TASK_STATUS.COMPLETE ? dateCompleted : dateCreated }} </span>
+                        <strong> Created At: </strong>
+                        <span> {{dateCreated }} </span>
+                        <strong v-if="isTaskCompleted(status)">Completed At: </strong>
+                        <span v-if="isTaskCompleted(status)"> {{dateCompleted }} </span>
                     </template>
                 </div>
                 <br>
