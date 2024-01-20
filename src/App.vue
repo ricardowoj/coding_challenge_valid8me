@@ -45,7 +45,6 @@ export default {
   async mounted() {
     const tasks = await getTasks();
     this.updateTasks(tasks);
-    this.saveTasksLocalStorage(this.tasks);
   },
   methods: {
     onCompleteAll() {
@@ -56,11 +55,7 @@ export default {
           value.dateCompleted = getNewDate();
         }
       }
-      this.saveTasksLocalStorage(data);
-      this.reloadCompletedTasks();
-    },
-    onCompleteTask(value) {
-      this.completeTask(value);
+      saveLocalStorage(this.keyLocalStorage, data);
       this.reloadCompletedTasks();
     },
     changeStatusTask(task, status) {
@@ -71,7 +66,7 @@ export default {
           value.dateCompleted = getNewDate();
         }
       }
-      this.saveTasksLocalStorage(data);
+      saveLocalStorage(this.keyLocalStorage, data);
       this.reloadCompletedTasks();
     },
     updateTasks(data) {
@@ -79,29 +74,21 @@ export default {
     },
     onFilterCompleteTask() {
       let data;
-      this.setTasksLocalStorage();
       if(this.actualCompleteTask === COMPLETE_TASK.hide) {
         data = this.getTasksLocalStorage().filter(value => value.status === TASK_STATUS.IN_PROGRESS);
         this.actualCompleteTask = COMPLETE_TASK.show;
         this.updateTasks(data);
       } else {
         this.actualCompleteTask = COMPLETE_TASK.hide;
-        this.setTasksLocalStorage();
+        this.updateTasks(this.getTasksLocalStorage());
       }
     },
     reloadCompletedTasks() {
-      this.setTasksLocalStorage();
       this.onFilterCompleteTask();
       this.onFilterCompleteTask();
-    },
-    setTasksLocalStorage() {
-      this.updateTasks(this.getTasksLocalStorage());
     },
     getTasksLocalStorage() {
       return getLocalStorage(KEY_LOCAL_STORAGE.value);
-    },
-    saveTasksLocalStorage(data) {
-      saveLocalStorage(this.keyLocalStorage, data);
     },
     onCreateTask() {
       this.task = {};
@@ -115,7 +102,7 @@ export default {
       if(data.status === TASK_STATUS.COMPLETE) {
         return;
       }
-      this.task = data;
+      this.updateTasks(data);
       this.$emit('task');
       this.setTaskModalVisible(true);
     },
