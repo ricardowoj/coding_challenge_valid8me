@@ -79,7 +79,7 @@ const TASK_CONFIG = {
     }
 };
 
-let IS_IMAGE_VALID = ref(false);
+const IS_IMAGE_VALID = ref(false);
 const loadImage = (url) => {
   return new Promise((resolve) => {
     const img = new Image();
